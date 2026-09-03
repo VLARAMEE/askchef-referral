@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "P63X6MT4LK.com.ask-chef.app",
+        "paths": [
+          "/referral",
+          "/referral/*"
+        ]
+      }
+    ]
+  }
+}
