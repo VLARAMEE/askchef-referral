@@ -4,12 +4,25 @@ Static GitHub Pages site for `invite.ask-chef.com`.
 
 ## Published routes
 
+- `/google-C-01` — Google Ads campaign referral landing page
+- `/<referral-code>` — generic campaign-code fallback for future referral links
 - `/referral?code=EXAMPLE` — referral landing page and App Store fallback
 - `/.well-known/apple-app-site-association` — Apple Universal Links association
 - `/apple-app-site-association` — duplicate legacy Apple lookup location
 
 The App Store button opens `https://apps.apple.com/app/id6761346875`. The page does
 not attempt to open a custom URL scheme or perform an automatic redirect.
+
+Referral pages first read the existing `code` query parameter and otherwise use a
+single path segment as the code. Codes are trimmed and limited to 80 characters.
+This keeps `/referral?code=EXAMPLE` working while allowing links such as
+`/google-C-01`, `/google-P-01`, `/instagram-01`, and `/recipe-site-a`.
+
+GitHub Pages cannot configure wildcard rewrites. The launch campaign therefore has
+a real `/google-C-01/index.html` so it returns HTTP 200, while `404.html` provides
+the same landing experience for new single-segment campaign paths without a code
+change. Add a matching directory for any future advertising destination that must
+also return HTTP 200 to crawlers and ad validators.
 
 ## GitHub Pages setup
 

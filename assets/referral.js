@@ -1,6 +1,19 @@
 (() => {
   const params = new URLSearchParams(window.location.search);
-  const rawCode = params.get("code");
+  const pathSegments = window.location.pathname
+    .split("/")
+    .filter(Boolean);
+  let pathCode = "";
+
+  if (pathSegments.length === 1 && pathSegments[0] !== "referral") {
+    try {
+      pathCode = decodeURIComponent(pathSegments[0]);
+    } catch {
+      pathCode = pathSegments[0];
+    }
+  }
+
+  const rawCode = params.get("code") || pathCode;
   const inviteCode = rawCode ? rawCode.trim().slice(0, 80) : "";
   const codeElement = document.querySelector("[data-invite-code]");
   const copyButton = document.querySelector("[data-copy-code]");
