@@ -4,25 +4,33 @@ Static GitHub Pages site for `invite.ask-chef.com`.
 
 ## Published routes
 
-- `/google-C-01` — Google Ads campaign referral landing page
-- `/<referral-code>` — generic campaign-code fallback for future referral links
+- `/google-C-01` — Google Ads campaign redirect
+- `/<referral-code>` — generic campaign-code redirect fallback for future links
 - `/referral?code=EXAMPLE` — referral landing page and App Store fallback
 - `/.well-known/apple-app-site-association` — Apple Universal Links association
 - `/apple-app-site-association` — duplicate legacy Apple lookup location
 
-The App Store button opens `https://apps.apple.com/app/id6761346875`. The page does
-not attempt to open a custom URL scheme or perform an automatic redirect.
+Campaign paths record the incoming attribution data locally and immediately
+redirect to `https://apps.apple.com/app/id6761346875`. The existing
+`/referral?code=EXAMPLE` page retains its code display and App Store button.
 
 Referral pages first read the existing `code` query parameter and otherwise use a
 single path segment as the code. Codes are trimmed and limited to 80 characters.
-This keeps `/referral?code=EXAMPLE` working while allowing links such as
-`/google-C-01`, `/google-P-01`, `/instagram-01`, and `/recipe-site-a`.
+This keeps `/referral?code=EXAMPLE` working while allowing campaign links such as
+`/google-C-01`, `/google-P-01`, `/instagram-01`, and `/recipe-site-a` to redirect.
+
+Before redirecting, the browser stores the referral code, latest attribution
+event, and the 20 most recent events in `localStorage`. Each event includes the
+full incoming URL, timestamp, path, all query parameters, Google click IDs, UTM
+parameters, and browser referrer. Storage failure is ignored so it cannot prevent
+the App Store redirect. This repository has no analytics or backend endpoint, so
+the stored events remain local to that browser and are not centrally reported.
 
 GitHub Pages cannot configure wildcard rewrites. The launch campaign therefore has
-a real `/google-C-01/index.html` so it returns HTTP 200, while `404.html` provides
-the same landing experience for new single-segment campaign paths without a code
-change. Add a matching directory for any future advertising destination that must
-also return HTTP 200 to crawlers and ad validators.
+a real `/google-C-01/index.html` so it returns HTTP 200, while `404.html` performs
+the same redirect for new single-segment campaign paths without a code change.
+Add a matching directory for any future advertising destination that must also
+return HTTP 200 to crawlers and ad validators.
 
 ## GitHub Pages setup
 
